@@ -2,7 +2,8 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-SAVE_PATH = Path(r"C:\Users\lod19\OneDrive\Desktop\Python Playground\Beginners Projects\groceries.json")
+SCRIPT_DIR = Path(__file__).resolve().parent
+SAVE_PATH = SCRIPT_DIR / "groceries.json"
 
 def timestamp():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -27,6 +28,15 @@ def save(groceries):
         json.dump(data, f, indent=4)
     print(f"(Saved to: {SAVE_PATH})")
 
+def clear_list(groceries):
+    confirm = input("Are you sure you want to clear the entire list? (yes/no): ").lower()
+    if confirm == "yes":
+        groceries.clear()
+        save(groceries)
+        print("All items have been removed from your list.")
+    else:
+        print("Clear list cancelled.")
+
 groceries, last_updated = load()
 
 if not SAVE_PATH.exists():
@@ -38,7 +48,7 @@ print(f"Data file: {SAVE_PATH}")
 
 while True:
     select = input(
-        "\n1. View list\n2. Add item\n3. Remove item\n4. Exit\nChoose an option: "
+        "\n1. View list\n2. Add item\n3. Remove item\n4. Clear list\n5. Exit\nChoose an option: "
     ).strip()
 
     if select == "1":
@@ -68,6 +78,9 @@ while True:
             print(f"{item.title()} is not in your list.")
 
     elif select == "4":
+        clear_list(groceries)
+
+    elif select == "5":
         save(groceries)
         print("Saved. Goodbye!")
         break
